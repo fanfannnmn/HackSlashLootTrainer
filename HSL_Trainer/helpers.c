@@ -182,103 +182,61 @@ void PrintBanner(void)
 // Menu Functions
 // ==========================
 
-void PrintMenuOptions(void)
+void PrintWhatEverOptions(void)
 {
-	printf("0. Exit trainer\n");
-	printf("1. Modify Player Health\n");
-	printf("2. Modify Player Defense\n");
+	printf("0. Exit Trainer\n");
+	printf("1. Modify Player Melee Attack\n");
+	printf("2. Modify Player Ranged Attack\n");
+	printf("3. Modify Player Magic Attack\n");
+	printf("4. Modify Player Defense\n");
+	printf("5. Modify Player Melee Damage\n");
+	printf("6. Modify Player Ranged Damage\n");
+	printf("7. Modify Player Magic Damage\n");
+	printf("8. Modify Player Health\n");
 }
 
-int ModifyHealth(HANDLE hTarget, void* playerStatsPointer)
+int ModifyWhatEver(HANDLE hTarget, void* playerStatsPointer, unsigned int selection)
 {
 	void* ptr;
-	unsigned int desiredHealth;
+	unsigned int desiredValue;
 
 	if (!ReadProcessMemory(hTarget, playerStatsPointer, &ptr, sizeof(void*), NULL))
 	{
 		printf("ReadProcessMemory() failed with error: %d.\n", GetLastError());
-		return TERROR_MODIFY_HEALTH_FAILED;
+		return TERROR_MODIFY_WHATEVER_FAILED;
 	}
 
-	// ptr now contains the address to the player stats structure. 
-	// We'll add 0x50 to this address to point to the player's health.
-	void* addr = (void*)((int)ptr + 0x50);
+	// ptr now contains the address to the player stats structure.
+	// We'll add 0x30 + 0x4 * selection to this address to point to the player's defense.
+	void* addr = (void*)((int)ptr + 0x30 + 0x4 * selection);
 
 	// Get the player's current health
-	unsigned int currentHealth;
-	if (!ReadProcessMemory(hTarget, addr, &currentHealth, sizeof(int), NULL))
+	unsigned int currentValue;
+	if (!ReadProcessMemory(hTarget, addr, &currentValue, sizeof(int), NULL))
 	{
 		printf("ReadProcessMemory() failed with error: %d.\n", GetLastError());
-		return TERROR_MODIFY_HEALTH_FAILED;
-	}
-
-	// Ask the user what they want their health to be (unsigned int max)
-	printf("Your current health is %d.\nWhat would you like your new health to be? >> ", currentHealth);
-	scanf_s("%u", &desiredHealth);
-
-	// INT_MAX = 2147483647
-	if (desiredHealth > INT_MAX || desiredHealth <= 0)
-	{
-		printf("ERROR: I can only modify health within the range [1,%d]\nHealth unchanged.\n", INT_MAX);
-		return TERROR_MODIFY_HEALTH_FAILED;
-	}
-
-	if (!WriteProcessMemory(hTarget, addr, &desiredHealth, sizeof(desiredHealth), NULL))
-	{
-		printf("WriteProcessMemory() failed with error: %d.\n", GetLastError());
-		return TERROR_MODIFY_HEALTH_FAILED;
-	}
-	else
-	{
-		printf("Your health has been changed.");
-	}
-
-	return TERROR_SUCCESS;
-}
-
-
-int ModifyDefense(HANDLE hTarget, void* playerStatsPointer)
-{
-	void* ptr;
-	unsigned int desiredDefense;
-
-	if (!ReadProcessMemory(hTarget, playerStatsPointer, &ptr, sizeof(void*), NULL))
-	{
-		printf("ReadProcessMemory() failed with error: %d.\n", GetLastError());
-		return TERROR_MODIFY_HEALTH_FAILED;
-	}
-
-	// ptr now contains the address to the player stats structure. 
-	// We'll add 0x40 to this address to point to the player's defense.
-	void* addr = (void*)((int)ptr + 0x40);
-
-	// Get the player's current health
-	unsigned int currentDefense;
-	if (!ReadProcessMemory(hTarget, addr, &currentDefense, sizeof(int), NULL))
-	{
-		printf("ReadProcessMemory() failed with error: %d.\n", GetLastError());
-		return TERROR_MODIFY_HEALTH_FAILED;
+		return TERROR_MODIFY_WHATEVER_FAILED;
 	}
 
 	// Ask the user what they want their defense to be (unsigned int max)
-	printf("Your base defense is %d.\nWhat would you like your new base defense to be? >> ", currentDefense);
-	scanf_s("%u", &desiredDefense);
+	printf("Your base value is %d.\nWhat would you like your new base to be? >> ", currentValue);
+	scanf_s("%u", &desiredValue);
 
 	// INT_MAX = 2147483647
-	if (desiredDefense > INT_MAX || desiredDefense <= 0)
+	if (desiredValue > INT_MAX || desiredValue <= 0)
 	{
-		printf("ERROR: I can only modify defense within the range [1,%d]\nHealth unchanged.\n", INT_MAX);
-		return TERROR_MODIFY_HEALTH_FAILED;
+		printf("ERROR: I can only modify value within the range [1,%d]\nValue unchanged.\n", INT_MAX);
+		return TERROR_MODIFY_WHATEVER_FAILED;
 	}
 
-	if (!WriteProcessMemory(hTarget, addr, &desiredDefense, sizeof(desiredDefense), NULL))
+	if (!WriteProcessMemory(hTarget, addr, &desiredValue, sizeof(desiredValue), NULL))
 	{
 		printf("WriteProcessMemory() failed with error: %d.\n", GetLastError());
-		return TERROR_MODIFY_HEALTH_FAILED;
+		return TERROR_MODIFY_WHATEVER_FAILED;
 	}
 	else
 	{
-		printf("Your health has been changed.");
+		printf("Your value has been changed.");
 	}
 
 	return TERROR_SUCCESS;

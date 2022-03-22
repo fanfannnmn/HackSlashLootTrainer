@@ -11,8 +11,7 @@ enum TRAINER_ERRORS
 	TERROR_PID_LOOKUP_FAILED,
 	TERROR_OPENPROC_FAILED,
 	TERROR_GET_BASE_ADDR_FAILED,
-	TERROR_MODIFY_HEALTH_FAILED,
-	TERROR_MODIFY_DEFENSE_FAILED,
+	TERROR_MODIFY_WHATEVER_FAILED,
 };
 
 // Helpers
@@ -20,8 +19,7 @@ int GetProcId(wchar_t* procName);
 int GetBaseAddress(wchar_t* procName, int targetPid);
 void ClearConsole(void);
 void PrintBanner(void);
-void PrintMenuOptions(void);
+void PrintWhatEverOptions(void);
 
 // Menu options
-int ModifyHealth(HANDLE hTarget, void* playerStatsPointer);
-int ModifyDefense(HANDLE hTarget, void* playerStatsPointer);
+int ModifyWhatEver(HANDLE hTarget, void* playerStatsPointer, unsigned int selection);

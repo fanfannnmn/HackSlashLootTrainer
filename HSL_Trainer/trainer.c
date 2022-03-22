@@ -37,29 +37,26 @@ int main()
 
 	BOOL showMenu = TRUE;
 	int selection = 0;
-	int result;
 	
 	while (showMenu)
 	{
 		PrintBanner();
-		PrintMenuOptions();
+		PrintWhatEverOptions();
 		printf("\nSelect an option: ");
 		scanf_s("%d", &selection);
 
-		switch (selection)
+		if (selection == 0)
 		{
-		case 0:
 			showMenu = FALSE;
 			break;
-		case 1:
-			result = ModifyHealth(hTarget, playerStatsPointer);
-			break;
-		case 2:
-			result = ModifyDefense(hTarget, playerStatsPointer);
-			break;
-		default:
-			printf("Please enter a valid selection.\n");
-			break;
+		}
+		else if (selection <= 8)
+		{
+			ModifyWhatEver(hTarget, playerStatsPointer, selection);
+		}
+		else
+		{
+			printf("Please enter a valid selection.");
 		}
 
 		// If a non-exit option is selected, pause menu so
